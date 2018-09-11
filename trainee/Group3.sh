@@ -1,10 +1,3 @@
-# Shell Programming
-
-## Group 1
-
-## Count number of even length words in the resume ##
-
-```
 #!/bin/sh
 fpath=$1 #command line input
 echo "File path is =$fpath"
@@ -55,10 +48,9 @@ maxcount=$((maxcount + 1))
 fi
 done
 
+
 #printing the words and length
 echo "Minimum length is = ${#mi}"
 echo "Number of minimum even length words=$mincount" 
 echo "Maximum length is = ${#ma}"
 echo "Number of maximum even length words=$maxcount" 
-
-```

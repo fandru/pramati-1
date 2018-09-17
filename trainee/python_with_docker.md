@@ -1,6 +1,6 @@
 
 
-# creating postgresql image from docker and accessing and connecting database from python.
+## creating postgresql image from docker and used it in python.
 
 ```
 import re

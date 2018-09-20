@@ -82,3 +82,63 @@ SELECT GENERATE_SERIES(
                    EXCEPT(SELECT dept_id FROM dept);
 
 ```
+
+
+
+**20-09-2018**
+
+
+**2)Manager Name, Reportee who joined first (Reportee Name - doj), Reportee who draws less sal (Reportee Name - salary)**
+
+```
+
+SELECT dte.MANAGER ,dte.MIN_JOINING ,sal.MIN_SALARY
+FROM 
+	(SELECT DISTINCT  mgr.name AS MANAGER,
+	FIRST_VALUE(CONCAT(emp.name,'-',emp.joining_date)) OVER 
+	(PARTITION BY mgr.emp_id 
+	ORDER BY  emp.joining_date)  
+	AS MIN_JOINING
+	FROM employee emp  , employee mgr  
+	WHERE emp.mgr_id=mgr.emp_id ) dte
+INNER JOIN
+	(SELECT  DISTINCT mgr.name AS MANAGER,
+	FIRST_VALUE(concat(emp.name,'-',emp.salary)) OVER 
+	(PARTITION BY mgr.emp_id 
+	ORDER BY  emp.salary)
+	AS MIN_SALARY 
+	FROM employee emp  , employee mgr  
+	WHERE emp.mgr_id=mgr.emp_id ) sal
+
+ON dte.MANAGER=sal.MANAGER;
+
+```
+
+**Find the list of employee records where salary data is missing**
+```
+SELECT concat(sd.START_DATE,'-',ed.END_DATE) Missing_Date FROM   
+
+(SELECT START_DATE FROM GENERATE_SERIES(
+                       (SELECT MIN(start_date) FROM salary_history),
+                       (SELECT MAX(start_date) FROM salary_history)
+                      ) AS START_DATE  
+                   EXCEPT (SELECT start_date FROM salary_history)) sd
+
+INNER JOIN
+
+(SELECT END_DATE  FROM GENERATE_SERIES(
+                       (SELECT MIN(end_date) FROM salary_history),
+                       (SELECT MAX(end_date) FROM salary_history)
+                      ) AS END_DATE 
+                   EXCEPT (SELECT end_date FROM salary_history)) ed
+
+on ed.END_DATE-sd.START_DATE > 1 ;
+```
+
+
+
+
+
+
+
+
